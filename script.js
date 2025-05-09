@@ -1,6 +1,20 @@
 function runFloydWarshall() {
-    const n = parseInt(document.getElementById("vertices").value);
-    const edgeInput = document.getElementById("edges").value.trim().split('\n');
+    const verticesInput = document.getElementById("vertices");
+    const edgesInput = document.getElementById("edges");
+    const outputDiv = document.getElementById("output");
+
+    if (!verticesInput || !edgesInput || !outputDiv) {
+        console.error("Missing required DOM elements");
+        return;
+    }
+
+    const n = parseInt(verticesInput.value);
+    if (isNaN(n) || n <= 0) {
+        outputDiv.innerHTML = "Please enter a valid number of vertices (positive integer)";
+        return;
+    }
+
+    const edgeInput = edgesInput.value.trim().split('\n');
     const INF = Infinity;
 
     const dist = Array.from({ length: n }, () => Array(n).fill(INF));
@@ -8,10 +22,15 @@ function runFloydWarshall() {
     // Set diagonal to 0
     for (let i = 0; i < n; i++) dist[i][i] = 0;
 
-    // Parse edge input
+    // Parse edge input with validation
     edgeInput.forEach(line => {
-      const [u, v, w] = line.split(' ').map(Number);
-      dist[u][v] = w;
+        const [u, v, w] = line.trim().split(' ').map(Number);
+        if (!isNaN(u) && !isNaN(v) && !isNaN(w) && 
+            u >= 0 && v >= 0 && u < n && v < n) {
+            dist[u][v] = w;
+        } else {
+            console.warn(`Skipping invalid edge: ${line}`);
+        }
     });
 
     // Floyd-Warshall algorithm
@@ -26,7 +45,6 @@ function runFloydWarshall() {
     }
 
     // Render output
-    const outputDiv = document.getElementById("output");
     let html = "<h2>Distance Matrix</h2><table><tr><th></th>";
     for (let i = 0; i < n; i++) html += `<th>${i}</th>`;
     html += "</tr>";
@@ -40,5 +58,5 @@ function runFloydWarshall() {
     }
 
     html += "</table>";
-        outputDiv.innerHTML = html;
-    }
+    outputDiv.innerHTML = html;
+}

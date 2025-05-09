@@ -24,6 +24,8 @@ function floydWarshall(): void {
     const [u, v, w] = line.trim().split(' ').map(Number);
     if (!isNaN(u) && !isNaN(v) && !isNaN(w) && u >= 0 && v >= 0 && u < n && v < n) {
       dist[u][v] = w;
+    } else {
+                console.warn(`Skipping invalid edge: ${line}`);
     }
   });
 
